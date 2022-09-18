@@ -1,0 +1,10 @@
+.container {
+    display: flex;
+    justify-content: space-evenly;
+    flex-direction: row;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+}
