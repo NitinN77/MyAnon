@@ -1,0 +1,13 @@
+.main {
+    display: flex;
+    justify-content: center;
+}
+
+.form {
+    width: 50%;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+    height: 50vh;
+}

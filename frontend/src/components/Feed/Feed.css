@@ -1,0 +1,13 @@
+.main {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.createPostForm {
+    margin-right: 200px;
+}
+
+.formLabel {
+    width: 340px;
+}

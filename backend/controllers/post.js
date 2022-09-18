@@ -1,7 +1,7 @@
 const Post = require("../models/post");
 
 exports.getAllPosts = (req, res) => {
-    Post.find((err, posts) => {
+    Post.find().populate('author').exec((err, posts) => {
         if (err) {
             console.log(err);
         }
