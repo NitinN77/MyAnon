@@ -3,10 +3,12 @@ import { useState, useEffect } from "react";
 import "./App.css";
 
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
-import Login from "./components/Login/Login";
-import Register from "./components/Register/Register";
-import Feed from './components/Feed/Feed'
-import Navbar from './components/Navbar/Navbar'
+import Login from "./pages/Login/Login";
+import Register from "./pages/Register/Register";
+import Feed from "./pages/Feed/Feed";
+import Navbar from "./components/Navbar/Navbar";
+import PostDetail from "./pages/PostDetail/PostDetail";
+import { QueryClient, QueryClientProvider } from "react-query";
 
 axios.interceptors.request.use(
   (config) => {
@@ -24,17 +26,22 @@ axios.interceptors.request.use(
 );
 
 function App() {
+  const queryClient = new QueryClient();
+
   return (
-    <div className="App">
-      <Navbar />
-      <Router>
-        <Routes>
-          <Route path="/" exact element={<Feed />} />
-          <Route path="/login" exact element={<Login />} /> 
-          <Route path="/register" exact element={<Register />} />
-        </Routes>
-      </Router>
-    </div>
+    <QueryClientProvider client={queryClient}>
+      <div className="App">
+        <Router>
+          <Navbar />
+          <Routes>
+            <Route path="/" exact element={<Feed />} />
+            <Route path="/posts/:postId" exact element={<PostDetail />} />
+            <Route path="/login" exact element={<Login />} />
+            <Route path="/register" exact element={<Register />} />
+          </Routes>
+        </Router>
+      </div>
+    </QueryClientProvider>
   );
 }
 
