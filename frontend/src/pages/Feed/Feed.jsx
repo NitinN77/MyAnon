@@ -13,10 +13,12 @@ import {
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { dateFormatter } from "../../util/datetimehelper";
+import Cookies from 'universal-cookie';
+ 
 
 
 const Feed = () => {
-
+  const cookies = new Cookies();
   const [posts, setPosts] = useState([]);
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
@@ -28,8 +30,8 @@ const Feed = () => {
       .then((res) => setPosts(res.data));
   });
 
-  const fetchPosts = () => {
-    const user = JSON.parse(localStorage.getItem("user"));
+  const createPost = () => {
+    const user = cookies.get("user")
     if (!user) {
       alert("Not logged in!");
       return;
@@ -40,7 +42,7 @@ const Feed = () => {
       authorId: user._id,
     });
   }
-  const postMutation = useMutation(fetchPosts, {
+  const postMutation = useMutation(createPost, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
     },
@@ -48,7 +50,7 @@ const Feed = () => {
 
   return (
     <div>
-      <div className="main">
+      <div className="main w-full lg:w-3/6">
         <div className="m-2">
         <form action="#" className="relative">
             <div className="border border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">

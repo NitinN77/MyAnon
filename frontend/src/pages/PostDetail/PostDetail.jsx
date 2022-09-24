@@ -25,7 +25,7 @@ const PostDetail = () => {
   }
 
   return (
-    <div>{detailPost && detailPost.title }</div>
+    <div className='m-2'>{detailPost && detailPost.title }</div>
   )
 }
 

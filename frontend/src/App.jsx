@@ -9,12 +9,15 @@ import Feed from "./pages/Feed/Feed";
 import Navbar from "./components/Navbar/Navbar";
 import PostDetail from "./pages/PostDetail/PostDetail";
 import { QueryClient, QueryClientProvider } from "react-query";
+import Cookies from 'universal-cookie';
+ 
+const cookies = new Cookies();
 
 axios.interceptors.request.use(
   (config) => {
     const { origin } = new URL(config.url);
     const allowedOrigins = ["http://localhost:3000"];
-    const token = localStorage.getItem("token");
+    const token = cookies.get("token");
     if (allowedOrigins.includes(origin)) {
       config.headers.authorization = `Bearer ${token}`;
     }

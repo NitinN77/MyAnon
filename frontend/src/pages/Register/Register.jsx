@@ -3,12 +3,14 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "./Register.css";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
 
 const Register = () => {
   const [registerEmail, setRegisterEmail] = useState("");
   const [registerPwd, setRegisterPwd] = useState("");
   const [registerUsername, setRegisterUsername] = useState("");
   let navigate = useNavigate();
+  const cookies = new Cookies();
   const handleRegister = async (e) => {
     e.preventDefault();
     axios
@@ -18,8 +20,8 @@ const Register = () => {
         username: registerUsername,
       })
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data));
+        cookies.set("token", res.data.token);
+        cookies.set("user", JSON.stringify(res.data));
         navigate("/");
         window.location.reload();
       })

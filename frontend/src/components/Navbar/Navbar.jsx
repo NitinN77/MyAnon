@@ -11,22 +11,25 @@ import {
   MagnifyingGlassIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
+import Cookies from "universal-cookie";
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
 }
 
 const Navbar = () => {
+  const cookies = new Cookies();
   const [authObject, setAuthObject] = useState(null);
 
   useEffect(() => {
-    if (JSON.parse(localStorage.getItem("user"))) {
-      setAuthObject(JSON.parse(localStorage.getItem("user")));
+    if (cookies.get("user")) {
+      setAuthObject(cookies.get("user"));
     }
   }, []);
 
   const handleLogOut = async () => {
-    localStorage.clear();
+    cookies.remove("user");
+    cookies.remove("token");
     window.location.reload();
   };
 
@@ -96,16 +99,25 @@ const Navbar = () => {
                   </div>
                 </div>
                 <div className="flex-shrink-0">
-                  <button
-                    type="button"
-                    className="relative inline-flex items-center px-4 py-2 border ml-4 border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
-                  >
-                    <PlusIcon
-                      className="-ml-1 mr-2 h-5 w-5"
-                      aria-hidden="true"
-                    />
-                    <span className="mb-[0.1rem]">New Post</span>
-                  </button>
+                  {authObject ? (
+                    <button
+                      type="button"
+                      className="relative inline-flex items-center px-4 py-2 border ml-4 border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                    >
+                      <PlusIcon
+                        className="-ml-1 mr-2 h-5 w-5"
+                        aria-hidden="true"
+                      />
+                      <span className="mb-[0.1rem]">New Post</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="lg:hidden relative inline-flex items-center px-4 py-2 border ml-3 border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                    >
+                      <span className="mb-[0.1rem]"><a href="/login">Login</a></span>
+                    </button>
+                  )}
                 </div>
               </div>
               <div className="flex lg:hidden">
@@ -135,7 +147,7 @@ const Navbar = () => {
                           <span className="sr-only">Open user menu</span>
                           <img
                             className="h-8 w-8 rounded-full"
-                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            src="https://i.pinimg.com/474x/76/4d/59/764d59d32f61f0f91dec8c442ab052c5.jpg"
                             alt=""
                           />
                         </Menu.Button>
@@ -206,11 +218,13 @@ const Navbar = () => {
                   </div>
                 ) : (
                   <button
-                  type="button"
-                  className="relative inline-flex items-center px-4 -ml-2 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
-                >
-                  <span className="mb-[0.1rem]"><a href="/login">Log In</a></span>
-                </button>
+                    type="button"
+                    className="relative inline-flex items-center px-4 -ml-2 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                  >
+                    <span className="mb-[0.1rem]">
+                      <a href="/login">Log In</a>
+                    </span>
+                  </button>
                 )}
               </div>
             </div>
@@ -255,7 +269,7 @@ const Navbar = () => {
                   <div className="flex-shrink-0">
                     <img
                       className="h-10 w-10 rounded-full"
-                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      src="https://i.pinimg.com/474x/76/4d/59/764d59d32f61f0f91dec8c442ab052c5.jpg"
                       alt=""
                     />
                   </div>
@@ -301,11 +315,11 @@ const Navbar = () => {
                 </div>{" "}
               </div>
             ) : (
-              <div className="mt-3 px-2 space-y-1">
+              <div className="px-2 pb-[0.1rem] mb-1 space-y-1">
                 <Disclosure.Button
                   as="a"
                   href="/login"
-                  className="block px-3 mb-4 py-3 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                  className="block px-3 py-3 mb-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
                 >
                   Log In
                 </Disclosure.Button>

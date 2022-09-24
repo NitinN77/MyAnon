@@ -3,8 +3,12 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import "./Login.css";
 import { useNavigate } from "react-router-dom";
+import Cookies from 'universal-cookie';
+ 
+
 
 const Login = () => {
+  const cookies = new Cookies();
   const [loginEmail, setLoginEmail] = useState("");
   let navigate = useNavigate();
   const [loginPwd, setLoginPwd] = useState("");
@@ -16,8 +20,8 @@ const Login = () => {
         password: loginPwd,
       })
       .then((res) => {
-        localStorage.setItem("token", res.data.token);
-        localStorage.setItem("user", JSON.stringify(res.data));
+        cookies.set('token', res.data.token, { path: '/'})
+        cookies.set('user', JSON.stringify(res.data), { path: '/'})
         navigate("/");
         window.location.reload();
       })
