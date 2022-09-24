@@ -28,8 +28,8 @@ const Navbar = () => {
   }, []);
 
   const handleLogOut = async () => {
-    cookies.remove("user");
-    cookies.remove("token");
+    cookies.remove("user", { path: '/'});
+    cookies.remove("token", { path: '/'});
     window.location.reload();
   };
 

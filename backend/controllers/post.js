@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Post = require("../models/post");
 
 exports.getAllPosts = (req, res) => {
@@ -34,4 +35,42 @@ exports.getOnePost = (req, res) => {
         }
         return res.status(200).json(post)
     })
+}
+
+exports.handlePlusOne = async (req, res) => {
+    const { postId, userId } = req.body
+    const post = await Post.findById(postId)
+    if (post.plusOnes.map(userid => userid.toString()).includes(userId)) {
+        post.plusOnes.remove(userId)
+        await post.save()
+        return res.status(204).json({message: "plus handled"})
+    }
+    if (post.minusOnes.map(userid => userid.toString()).includes(userId)) {
+        post.minusOnes.remove(userId)
+        post.plusOnes.push(mongoose.Types.ObjectId(userId))
+        await post.save()
+        return res.status(204).json({message: "plus handled"})
+    }
+    post.plusOnes.push(mongoose.Types.ObjectId(userId))
+    await post.save()
+    return res.status(204).json({message: "plus handled"})
+}
+
+exports.handleMinusOne = async (req, res) => {
+    const { postId, userId } = req.body
+    const post = await Post.findById(postId)
+    if (post.minusOnes.map(userid => userid.toString()).includes(userId)) {
+        post.minusOnes.remove(userId)
+        await post.save()
+        return res.status(204).json({message: "minus handled"})
+    }
+    if (post.plusOnes.map(userid => userid.toString()).includes(userId)) {
+        post.plusOnes.remove(userId)
+        post.minusOnes.push(mongoose.Types.ObjectId(userId))
+        await post.save()
+        return res.status(204).json({message: "minus handled"})
+    }
+    post.minusOnes.push(mongoose.Types.ObjectId(userId))
+    await post.save()
+    return res.status(204).json({message: "minus handled"})
 }

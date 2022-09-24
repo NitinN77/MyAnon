@@ -16,7 +16,13 @@ const postSchema = new mongoose.Schema({
     }],
     author: {
         type: mongoose.Schema.Types.ObjectId, ref: "User"
-    }
+    },
+    plusOnes: [{
+        type: mongoose.Schema.Types.ObjectId, ref: "User"
+    }],
+    minusOnes: [{
+        type: mongoose.Schema.Types.ObjectId, ref: "User"
+    }]
 });
 
 postSchema.set('timestamps', true)
