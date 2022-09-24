@@ -1,14 +1,22 @@
 import React from "react";
-import { useState, useRef, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 import "./Feed.css";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+import {
+  CalendarIcon,
+  Cog6ToothIcon,
+  TagIcon,
+  UserCircleIcon,
+} from "@heroicons/react/24/solid";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { dateFormatter } from "../../util/datetimehelper";
 
+
 const Feed = () => {
+
   const [posts, setPosts] = useState([]);
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
@@ -20,12 +28,7 @@ const Feed = () => {
       .then((res) => setPosts(res.data));
   });
 
-  const handleLogOut = async () => {
-    localStorage.clear();
-    window.location.reload();
-  };
-
-  const postMutation = useMutation((_) => {
+  const fetchPosts = () => {
     const user = JSON.parse(localStorage.getItem("user"));
     if (!user) {
       alert("Not logged in!");
@@ -36,9 +39,8 @@ const Feed = () => {
       body: formBody,
       authorId: user._id,
     });
-  });
-
-  const postsInvalidate = useMutation(postMutation, {
+  }
+  const postMutation = useMutation(fetchPosts, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
     },
@@ -47,7 +49,78 @@ const Feed = () => {
   return (
     <div>
       <div className="main">
-        <div>
+        <div className="m-2">
+        <form action="#" className="relative">
+            <div className="border border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
+              <label htmlFor="title" className="sr-only">
+                Title
+              </label>
+              <input
+                type="text"
+                name="title"
+                id="title"
+                className="block w-full border-0 pt-2.5 text-lg font-medium placeholder-gray-500 focus:outline-none"
+                placeholder="Title"
+                value={formTitle}
+                onChange={(e) => setFormTitle(e.target.value)}
+              />
+              <label htmlFor="description" className="sr-only">
+                Description
+              </label>
+              <textarea
+                rows={4}
+                name="description"
+                id="description"
+                className="block w-full border-0 py-0 pr-2 resize-none placeholder-gray-500 focus:outline-none sm:text-sm"
+                placeholder="Write a description..."
+                value={formBody}
+                onChange={(e) => setFormBody(e.target.value)}
+              />
+
+              {/* Spacer element to match the height of the toolbar */}
+              <div aria-hidden="true">
+                <div className="h-px" />
+                <div className="py-2">
+                  <div className="py-px">
+                    <div className="h-9" />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div className="absolute bottom-0 inset-x-px">
+              {/* Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. */}
+
+              <div className="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
+                <div className="flex">
+                  <button
+                    type="button"
+                    className="-ml-2 -my-2 rounded-full px-3 py-2 inline-flex items-center text-left text-gray-400 group"
+                  >
+                    <Cog6ToothIcon
+                      className="-ml-1 h-5 w-5 mt-[0.1rem] mr-2 group-hover:text-gray-500"
+                      aria-hidden="true"
+                    />
+                    <span className="text-sm text-gray-500 group-hover:text-gray-600 italic">
+                      Advanced Creation
+                    </span>
+                  </button>
+                </div>
+                <div className="flex-shrink-0">
+                  <button
+                    type="submit"
+                    onClick={(e) => {
+                      e.preventDefault()
+                      postMutation.mutate();
+                    }}
+                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Create
+                  </button>
+                </div>
+              </div>
+            </div>
+          </form>
           <ul role="list" className="divide-y divide-gray-200">
             {isLoading ? (
               <div>Loading... </div>
@@ -90,34 +163,6 @@ const Feed = () => {
           </ul>
         </div>
         <div>
-          <h2>Create a Post</h2>
-          <form className="createPostForm">
-            <p>Title</p>
-            <input
-              type="text"
-              value={formTitle}
-              onChange={(e) => setFormTitle(e.target.value)}
-              className="formLabel"
-            />
-            <p>Body</p>
-            <textarea
-              value={formBody}
-              onChange={(e) => setFormBody(e.target.value)}
-              cols="48"
-            />
-            <br /> <br />
-            <button
-              onClick={(e) => {
-                e.preventDefault()
-                postMutation.mutate();
-              }}
-            >
-              Create
-            </button>
-          </form>
-          {postMutation.isError ? <h2>{postMutation.error.message}</h2> : <></>}
-          {postMutation.isLoading ? <h2>Creating your post...</h2> : <></>}
-          {postMutation.isSuccess ? <h2>Post created!</h2> : <></>}
         </div>
       </div>
     </div>

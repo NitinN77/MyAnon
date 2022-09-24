@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import { Link } from 'react-router-dom';
+import { Link } from "react-router-dom";
 import { Fragment } from "react";
 import { Disclosure, Menu, Transition } from "@headlessui/react";
 import {
@@ -9,9 +9,8 @@ import {
   BellIcon,
   XMarkIcon,
   MagnifyingGlassIcon,
-  PlusIcon
+  PlusIcon,
 } from "@heroicons/react/24/outline";
-
 
 function classNames(...classes) {
   return classes.filter(Boolean).join(" ");
@@ -26,6 +25,11 @@ const Navbar = () => {
     }
   }, []);
 
+  const handleLogOut = async () => {
+    localStorage.clear();
+    window.location.reload();
+  };
+
   return (
     // <div>Navbar{"  "}
     //     {authObject ? ' | Logged in as ' + authObject.username : 'Not logged in' }
@@ -38,7 +42,7 @@ const Navbar = () => {
               <div className="flex items-center px-2 lg:px-0">
                 <div className="flex-shrink-0">
                   <h1 className="text-lg text-white font-bold">
-                    <Link to="/">MyAnon</Link> 
+                    <Link to="/">MyAnon</Link>
                   </h1>
                 </div>
                 <div className="hidden lg:block lg:ml-6">
@@ -96,7 +100,10 @@ const Navbar = () => {
                     type="button"
                     className="relative inline-flex items-center px-4 py-2 border ml-4 border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-indigo-500 hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
                   >
-                    <PlusIcon className="-ml-1 mr-2 h-5 w-5" aria-hidden="true" />
+                    <PlusIcon
+                      className="-ml-1 mr-2 h-5 w-5"
+                      aria-hidden="true"
+                    />
                     <span className="mb-[0.1rem]">New Post</span>
                   </button>
                 </div>
@@ -112,78 +119,99 @@ const Navbar = () => {
                 </Disclosure.Button>
               </div>
               <div className="hidden lg:block lg:ml-4">
-                <div className="flex items-center">
-                  <button
-                    type="button"
-                    className="flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                  >
-                    <span className="sr-only">View notifications</span>
-                    <BellIcon className="h-6 w-6" aria-hidden="true" />
-                  </button>
-                  <Menu as="div" className="ml-4 relative flex-shrink-0">
-                    <div>
-                      <Menu.Button className="bg-gray-800 rounded-full flex text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
-                        <span className="sr-only">Open user menu</span>
-                        <img
-                          className="h-8 w-8 rounded-full"
-                          src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                          alt=""
-                        />
-                      </Menu.Button>
-                    </div>
-                    <Transition
-                      as={Fragment}
-                      enter="transition ease-out duration-100"
-                      enterFrom="transform opacity-0 scale-95"
-                      enterTo="transform opacity-100 scale-100"
-                      leave="transition ease-in duration-75"
-                      leaveFrom="transform opacity-100 scale-100"
-                      leaveTo="transform opacity-0 scale-95"
+                {authObject ? (
+                  <div className="flex items-center">
+                    <button
+                      type="button"
+                      className="flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
                     >
-                      <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Your Profile
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Settings
-                            </a>
-                          )}
-                        </Menu.Item>
-                        <Menu.Item>
-                          {({ active }) => (
-                            <a
-                              href="#"
-                              className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700"
-                              )}
-                            >
-                              Sign out
-                            </a>
-                          )}
-                        </Menu.Item>
-                      </Menu.Items>
-                    </Transition>
-                  </Menu>
-                </div>
+                      <span className="sr-only">View notifications</span>
+                      <BellIcon className="h-6 w-6" aria-hidden="true" />
+                    </button>
+
+                    <Menu as="div" className="ml-4 relative flex-shrink-0">
+                      <div>
+                        <Menu.Button className="bg-gray-800 rounded-full flex text-sm text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white">
+                          <span className="sr-only">Open user menu</span>
+                          <img
+                            className="h-8 w-8 rounded-full"
+                            src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                            alt=""
+                          />
+                        </Menu.Button>
+                      </div>
+                      <Transition
+                        as={Fragment}
+                        enter="transition ease-out duration-100"
+                        enterFrom="transform opacity-0 scale-95"
+                        enterTo="transform opacity-100 scale-100"
+                        leave="transition ease-in duration-75"
+                        leaveFrom="transform opacity-100 scale-100"
+                        leaveTo="transform opacity-0 scale-95"
+                      >
+                        <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className="block px-4 py-2 text-sm text-gray-700"
+                              >
+                                {authObject.username}
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                              >
+                                Your Profile
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                              >
+                                Settings
+                              </a>
+                            )}
+                          </Menu.Item>
+                          <Menu.Item>
+                            {({ active }) => (
+                              <a
+                                href="#"
+                                className={classNames(
+                                  active ? "bg-gray-100" : "",
+                                  "block px-4 py-2 text-sm text-gray-700"
+                                )}
+                                onClick={handleLogOut}
+                              >
+                                Sign out
+                              </a>
+                            )}
+                          </Menu.Item>
+                        </Menu.Items>
+                      </Transition>
+                    </Menu>
+                  </div>
+                ) : (
+                  <button
+                  type="button"
+                  className="relative inline-flex items-center px-4 -ml-2 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-500 hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-indigo-500"
+                >
+                  <span className="mb-[0.1rem]"><a href="/login">Log In</a></span>
+                </button>
+                )}
               </div>
             </div>
           </div>
@@ -195,7 +223,7 @@ const Navbar = () => {
                 href="#"
                 className="bg-gray-900 text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Dashboard
+                Feed
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
@@ -219,55 +247,70 @@ const Navbar = () => {
                 Calendar
               </Disclosure.Button>
             </div>
-            <div className="pt-4 pb-3 border-t border-gray-700">
-              <div className="flex items-center px-5">
-                <div className="flex-shrink-0">
-                  <img
-                    className="h-10 w-10 rounded-full"
-                    src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
-                    alt=""
-                  />
-                </div>
-                <div className="ml-3">
-                  <div className="text-base font-medium text-white">
-                    Tom Cook
+
+            {authObject ? (
+              <div className="pt-4 pb-3 border-t border-gray-700">
+                {" "}
+                <div className="flex items-center px-5">
+                  <div className="flex-shrink-0">
+                    <img
+                      className="h-10 w-10 rounded-full"
+                      src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                      alt=""
+                    />
                   </div>
-                  <div className="text-sm font-medium text-gray-400">
-                    tom@example.com
+                  <div className="ml-3">
+                    <div className="text-base font-medium text-white">
+                      {authObject.username}
+                    </div>
+                    <div className="text-sm font-medium text-gray-400">
+                      {authObject.email}
+                    </div>
                   </div>
+                  <button
+                    type="button"
+                    className="ml-auto flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
+                  >
+                    <span className="sr-only">View notifications</span>
+                    <BellIcon className="h-6 w-6" aria-hidden="true" />
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  className="ml-auto flex-shrink-0 bg-gray-800 p-1 rounded-full text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-white"
-                >
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
+                <div className="mt-3 px-2 space-y-1">
+                  <Disclosure.Button
+                    as="a"
+                    href="#"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                  >
+                    Your Profile
+                  </Disclosure.Button>
+                  <Disclosure.Button
+                    as="a"
+                    href="#"
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                  >
+                    Settings
+                  </Disclosure.Button>
+                  <Disclosure.Button
+                    as="a"
+                    href="#"
+                    onClick={handleLogOut}
+                    className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                  >
+                    Sign out
+                  </Disclosure.Button>
+                </div>{" "}
               </div>
+            ) : (
               <div className="mt-3 px-2 space-y-1">
                 <Disclosure.Button
                   as="a"
-                  href="#"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
+                  href="/login"
+                  className="block px-3 mb-4 py-3 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
                 >
-                  Your Profile
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                >
-                  Settings
-                </Disclosure.Button>
-                <Disclosure.Button
-                  as="a"
-                  href="#"
-                  className="block px-3 py-2 rounded-md text-base font-medium text-gray-400 hover:text-white hover:bg-gray-700"
-                >
-                  Sign out
+                  Log In
                 </Disclosure.Button>
               </div>
-            </div>
+            )}
           </Disclosure.Panel>
         </>
       )}
