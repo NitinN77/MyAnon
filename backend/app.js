@@ -5,6 +5,7 @@ require('dotenv').config()
 
 const userRoutes = require('./routes/user')
 const postRoutes = require('./routes/post')
+const commentRoutes = require('./routes/comment')
 
 const app = express()
 const port = 3000
@@ -26,6 +27,7 @@ mongoose.connect('mongodb://0.0.0.0:27017/myanondb', {
 
 app.use('/user', userRoutes)
 app.use('/post', postRoutes)
+app.use('/comment', commentRoutes)
 
 app.get('/', (req, res) => {
     res.json({message: "404 Page Not Found"})

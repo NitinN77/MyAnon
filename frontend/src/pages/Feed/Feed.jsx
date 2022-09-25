@@ -1,22 +1,18 @@
 import React from "react";
 import { useState } from "react";
 import axios from "axios";
-import { Link } from "react-router-dom";
-import { useNavigate } from "react-router-dom";
-import { BoltIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
+import { Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQuery, useQueryClient } from "react-query";
+import FeedPost from "../../components/FeedPost/FeedPost";
 
-import { dateFormatter } from "../../util/datetimehelper";
 import Cookies from "universal-cookie";
-
-import { classNames } from "../../util/tailwindhelper";
 
 const Feed = () => {
   const cookies = new Cookies();
   const [posts, setPosts] = useState([]);
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
-  let navigate = useNavigate();
+
   const queryClient = useQueryClient();
   const { isLoading, isError, data } = useQuery("posts", () => {
     axios
@@ -121,50 +117,7 @@ const Feed = () => {
             {isLoading ? (
               <div>Loading... </div>
             ) : (
-              posts.map((post) => (
-                <li
-                  key={post._id}
-                  className="relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset"
-                  onClick={() => {
-                    navigate(`/posts/${post._id}`);
-                  }}
-                >
-                  <div className="flex justify-between lg:space-x-80">
-                    <div className="min-w-0 flex-1">
-                      <a href="#" className="block focus:outline-none">
-                        <span className="absolute inset-0" aria-hidden="true" />
-                        <p className="text-sm font-medium text-gray-900 truncate">
-                          {post.title}
-                        </p>
-                        <p className="text-sm text-gray-500 truncate">
-                          {post.author.username}
-                        </p>
-                      </a>
-                    </div>
-                    <div
-                      dateTime={post.createdAt}
-                      className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500"
-                    >
-                      <p
-                        className={classNames(
-                          post.plusOnes.length - post.minusOnes.length > 0 ? "text-indigo-600" : "",
-                          "inline-flex float-right"
-                        )}
-                      >
-                        {post.plusOnes.length - post.minusOnes.length}
-                        <BoltIcon className="ml-[0.15rem] mt-[0.15rem] h-4 w-4" />
-                      </p>
-                      <br />
-                      <time>{dateFormatter(post.createdAt)}</time>
-                    </div>
-                  </div>
-                  <div className="mt-1">
-                    <p className="line-clamp-2 text-sm text-gray-600">
-                      {post.body}
-                    </p>
-                  </div>
-                </li>
-              ))
+              posts.map((post) => <FeedPost post={post} />)
             )}
           </ul>
         </div>
