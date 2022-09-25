@@ -32,9 +32,6 @@ const Navbar = () => {
   };
 
   return (
-    // <div>Navbar{"  "}
-    //     {authObject ? ' | Logged in as ' + authObject.username : 'Not logged in' }
-    // </div>
     <Disclosure as="nav" className="bg-gray-800">
       {({ open }) => (
         <>
@@ -58,19 +55,19 @@ const Navbar = () => {
                       to="/"
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
-                      Team
+                      Discover
                     </Link>
                     <Link
                       to="/"
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
-                      Projects
+                      Trending
                     </Link>
                     <Link
                       to="/"
                       className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
                     >
-                      Calendar
+                      My Shack
                     </Link>
                   </div>
                 </div>
@@ -242,21 +239,21 @@ const Navbar = () => {
                 href="#"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Team
+                Discover
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
                 href="#"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Projects
+                Trending
               </Disclosure.Button>
               <Disclosure.Button
                 as="a"
                 href="#"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white block px-3 py-2 rounded-md text-base font-medium"
               >
-                Calendar
+                My Shack
               </Disclosure.Button>
             </div>
 

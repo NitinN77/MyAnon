@@ -43,7 +43,7 @@ const FeedPost = ({ post }) => {
               <BoltIcon className="ml-[0.15rem] mt-[0.15rem] h-4 w-4" />
             </p>
             <p className="inline-flex">
-            <span className="ml-2 mr-[0.15rem]">0</span>
+            <span className="ml-2 mr-[0.15rem]">{ post.comments.length }</span>
             <ChatBubbleLeftRightIcon className="ml-[0.15rem] mt-[0.15rem] h-4 w-4" />
             </p>
           </div>

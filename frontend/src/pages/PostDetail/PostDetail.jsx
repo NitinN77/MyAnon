@@ -6,12 +6,15 @@ import { useMutation, useQuery, useQueryClient } from "react-query";
 import Cookies from "universal-cookie";
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
 import { classNames } from "../../util/tailwindhelper";
+import DetailComment from "../../components/DetailComment/DetailComment";
+import { dateFormatter } from "../../util/datetimehelper";
 
 const PostDetail = () => {
   const { postId } = useParams();
   const cookies = new Cookies();
   const queryClient = useQueryClient();
   const [detailPost, setDetailPost] = useState(null);
+  const [newComment, setNewCommment] = useState("");
 
   const { isLoading, isError, data } = useQuery("singlePost", () => {
     axios
@@ -56,6 +59,26 @@ const PostDetail = () => {
   });
 
   const minusOneMutation = useMutation(handleMinusOne, {
+    onSuccess: () => {
+      queryClient.invalidateQueries("posts");
+      queryClient.invalidateQueries("singlePost");
+    },
+  });
+
+  const handleNewComment = () => {
+    const user = cookies.get("user");
+    if (!user) {
+      alert("Not logged in!");
+      return;
+    }
+    return axios.post("http://localhost:3000/comment/create", {
+      postId,
+      userId: user._id,
+      body: newComment,
+    });
+  };
+
+  const newCommentMutation = useMutation(handleNewComment, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
       queryClient.invalidateQueries("singlePost");
@@ -108,65 +131,60 @@ const PostDetail = () => {
               </p>
               {detailPost.author.username}
               <br />
-              Lorem ipsum dolor sit.
+              {dateFormatter(detailPost.createdAt)}
             </div>
           </div>
           <div className="lg:w-4/6 w-full mt-4">
-          <form action="#" className="relative ">
-            <div className="border pt-4 border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
-              <label htmlFor="description" className="sr-only">
-                Description
-              </label>
-              <textarea
-                rows={4}
-                name="description"
-                id="description"
-                className="block w-full border-0 py-0 pr-2 resize-none placeholder-gray-500 focus:outline-none sm:text-sm"
-                placeholder="Write a comment..."
-                value={``}
-                onChange={(e) => {}}
-              />
-
-              {/* Spacer element to match the height of the toolbar */}
-              <div aria-hidden="true">
-                <div className="h-px" />
-                <div className="py-2">
-                  <div className="py-px">
-                    <div className="h-9" />
+            <form action="#" className="relative ">
+              <div className="border pt-4 border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
+                <label htmlFor="description" className="sr-only">
+                  Description
+                </label>
+                <textarea
+                  rows={4}
+                  name="description"
+                  id="description"
+                  className="block w-full border-0 py-0 pr-2 resize-none placeholder-gray-500 focus:outline-none sm:text-sm"
+                  placeholder="Write a comment..."
+                  value={newComment}
+                  onChange={(e) => {
+                    setNewCommment(e.target.value);
+                  }}
+                />
+                <div aria-hidden="true">
+                  <div className="h-px" />
+                  <div className="py-2">
+                    <div className="py-px">
+                      <div className="h-9" />
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="absolute bottom-0 inset-x-px">
-              {/* Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. */}
-
-              <div className="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
-                <div className="flex">
-                  <button
-                    type="button"
-                    className="-ml-2 -my-2 rounded-full px-3 py-2 inline-flex items-center text-left text-gray-400 group"
-                  ></button>
-                </div>
-                <div className="flex-shrink-0">
-                  <button
-                    type="submit"
-                    onClick={(e) => {}}
-                    className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Post Comment
-                  </button>
+              <div className="absolute bottom-0 inset-x-px">
+                <div className="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
+                  <div className="flex"></div>
+                  <div className="flex-shrink-0">
+                    <button
+                      type="submit"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        newCommentMutation.mutate();
+                      }}
+                      className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Post Comment
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </form>
-          <ul>
-          {
-            detailPost.comments.map(comment => <li>{comment.body} {comment.author.username}</li>)
-          }
-          </ul>
+            </form>
+            <ul className="mt-2">
+              {detailPost.comments.map((comment) => (
+                <DetailComment comment={comment} />
+              ))}
+            </ul>
           </div>
-
         </div>
       ) : (
         <div>Loading...</div>
