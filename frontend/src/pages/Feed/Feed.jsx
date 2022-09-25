@@ -3,18 +3,13 @@ import { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import {
-  CalendarIcon,
-  Cog6ToothIcon,
-  TagIcon,
-  UserCircleIcon,
-} from "@heroicons/react/24/solid";
+import { BoltIcon, Cog6ToothIcon } from "@heroicons/react/24/solid";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 
 import { dateFormatter } from "../../util/datetimehelper";
-import Cookies from 'universal-cookie';
- 
+import Cookies from "universal-cookie";
 
+import { classNames } from "../../util/tailwindhelper";
 
 const Feed = () => {
   const cookies = new Cookies();
@@ -30,7 +25,7 @@ const Feed = () => {
   });
 
   const createPost = () => {
-    const user = cookies.get("user")
+    const user = cookies.get("user");
     if (!user) {
       alert("Not logged in!");
       return;
@@ -40,7 +35,7 @@ const Feed = () => {
       body: formBody,
       authorId: user._id,
     });
-  }
+  };
   const postMutation = useMutation(createPost, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
@@ -49,9 +44,9 @@ const Feed = () => {
 
   return (
     <div>
-      <div className="main w-full lg:w-3/6">
+      <div className="w-full lg:w-3/6">
         <div className="m-2">
-        <form action="#" className="relative">
+          <form action="#" className="relative">
             <div className="border border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
               <label htmlFor="title" className="sr-only">
                 Title
@@ -111,7 +106,7 @@ const Feed = () => {
                   <button
                     type="submit"
                     onClick={(e) => {
-                      e.preventDefault()
+                      e.preventDefault();
                       postMutation.mutate();
                     }}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
@@ -122,14 +117,14 @@ const Feed = () => {
               </div>
             </div>
           </form>
-          <ul role="list" className="divide-y divide-gray-200">
+          <ul role="list" className="divide-y mt-2 divide-gray-200">
             {isLoading ? (
               <div>Loading... </div>
             ) : (
               posts.map((post) => (
                 <li
                   key={post._id}
-                  className="relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset focus-within:ring-indigo-600"
+                  className="relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset"
                   onClick={() => {
                     navigate(`/posts/${post._id}`);
                   }}
@@ -146,12 +141,22 @@ const Feed = () => {
                         </p>
                       </a>
                     </div>
-                    <time
-                      dateTime={post.createdAt && post.createdAt}
+                    <div
+                      dateTime={post.createdAt}
                       className="flex-shrink-0 whitespace-nowrap text-sm text-gray-500"
                     >
-                      {post.createdAt && dateFormatter(post.createdAt)}
-                    </time>
+                      <p
+                        className={classNames(
+                          post.plusOnes.length - post.minusOnes.length > 0 ? "text-indigo-600" : "",
+                          "inline-flex float-right"
+                        )}
+                      >
+                        {post.plusOnes.length - post.minusOnes.length}
+                        <BoltIcon className="ml-[0.15rem] mt-[0.15rem] h-4 w-4" />
+                      </p>
+                      <br />
+                      <time>{dateFormatter(post.createdAt)}</time>
+                    </div>
                   </div>
                   <div className="mt-1">
                     <p className="line-clamp-2 text-sm text-gray-600">
@@ -163,8 +168,7 @@ const Feed = () => {
             )}
           </ul>
         </div>
-        <div>
-        </div>
+        <div></div>
       </div>
     </div>
   );

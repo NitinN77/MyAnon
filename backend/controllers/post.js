@@ -29,7 +29,7 @@ exports.getPostsByUser = (req, res) => {
 }
 
 exports.getOnePost = (req, res) => {
-    Post.findById(req.body.postId, (err, post) => {
+    Post.findById(req.body.postId).populate('author').exec((err, post) => {
         if (err) {
             res.status(404).json({ message: "Post not found"})
         }

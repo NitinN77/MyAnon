@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Cookies from "universal-cookie";
+import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
+import { classNames } from "../../util/tailwindhelper";
 
 const PostDetail = () => {
   const { postId } = useParams();
@@ -65,35 +67,47 @@ const PostDetail = () => {
   }
 
   return (
-    <div className="m-2">
+    <div className="m-3">
       {detailPost ? (
-        <div>
-          {detailPost.title}
-          <br />
-          {detailPost.body}
-          <br />
-          <br />
-          Score: {detailPost.plusOnes.length - detailPost.minusOnes.length}
-          <br />
-          <br />
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              plusOneMutation.mutate();
-            }}
-            className="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            +1
-          </button>
-          <button
-            onClick={(e) => {
-              e.preventDefault();
-              minusOneMutation.mutate();
-            }}
-            className="inline-flex items-center px-4 py-2 ml-2 border border-transparent rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-          >
-            -1
-          </button>
+        <div className="lg:flex items-start block">
+          <div className="w-full lg:w-4/6 ">
+            <h1 className="text-3xl">{detailPost.title}</h1>
+            <br />
+            {detailPost.body}
+          </div>
+          <div className=" w-full lg:w-2/6 mt-2 lg:ml-4 border-2 rounded-md p-4">
+            <p className="inline-flex float-right">
+              <BoltIcon
+                onClick={(e) => {
+                  e.preventDefault();
+                  plusOneMutation.mutate();
+                }}
+                className="h-6 w-6 cursor-pointer text-indigo-600 mr-4 hover:bg-indigo-600 hover:text-gray-200 rounded"
+              ></BoltIcon>
+              <div
+                className={classNames(
+                  detailPost.plusOnes.length - detailPost.minusOnes.length > 0
+                    ? "text-indigo-600"
+                    : "text-gray-600",
+                  "inline-flex float-right"
+                )}
+              >
+                {detailPost.plusOnes.length - detailPost.minusOnes.length}
+              </div>
+              <BoltSlashIcon
+                onClick={(e) => {
+                  e.preventDefault();
+                  minusOneMutation.mutate();
+                }}
+                className="h-6 w-6 cursor-pointer text-gray-600 ml-4 hover:bg-gray-600 hover:text-gray-200 rounded"
+              >
+                -1
+              </BoltSlashIcon>
+            </p>
+            {detailPost.author.username}
+            <br />
+            Lorem ipsum dolor sit.
+          </div>
         </div>
       ) : (
         <div>Loading...</div>

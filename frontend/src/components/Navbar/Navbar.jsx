@@ -13,9 +13,7 @@ import {
 } from "@heroicons/react/24/outline";
 import Cookies from "universal-cookie";
 
-function classNames(...classes) {
-  return classes.filter(Boolean).join(" ");
-}
+import { classNames } from '../../util/tailwindhelper'
 
 const Navbar = () => {
   const cookies = new Cookies();
