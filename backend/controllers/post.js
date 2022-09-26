@@ -1,6 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const Post = require("../models/post");
-const Comment = require('../models/comment')
+const Comment = require("../models/comment");
 
 exports.getAllPosts = (req, res) => {
   const pageNumber = parseInt(req.query.pageNumber);
@@ -93,18 +93,33 @@ exports.handleMinusOne = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
-  const { postId, userId } = req.body
-  const post = await Post.findById(postId)
-  if(!post) {
-    return res.status(404)
+  const { postId, userId } = req.body;
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404);
   }
   if (userId === req.user.id && post.author.toString() === userId) {
     await Comment.deleteMany({
-      post: mongoose.Types.ObjectId(postId)
-    })
-    await Post.findByIdAndDelete(postId)
-    return res.status(200).json({message: "deleted successfully"})
+      post: mongoose.Types.ObjectId(postId),
+    });
+    await Post.findByIdAndDelete(postId);
+    return res.status(200).json({ message: "deleted successfully" });
   } else {
-    return res.status(404).json({message: "invalid delete request"})
+    return res.status(404).json({ message: "invalid delete request" });
   }
-}
+};
+
+exports.updatePost = async (req, res) => {
+  const { postId, userId, newBody } = req.body;
+  const post = await Post.findById(postId);
+  if (!post) {
+    return res.status(404);
+  }
+  if (userId === req.user.id && post.author.toString() === userId) {
+    post.body = newBody
+    await post.save()
+    return res.status(200).json({ message: "updated successfully" });
+  } else {
+    return res.status(404).json({ message: "invalid update request" });
+  }
+};

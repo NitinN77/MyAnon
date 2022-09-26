@@ -6,7 +6,8 @@ const {
     getOnePost,
     handlePlusOne,
     handleMinusOne,
-    deletePost
+    deletePost,
+    updatePost
 } = require("../controllers/post");
 const { protect } = require("../middleware/auth");
 
@@ -19,5 +20,6 @@ router.post('/getone', getOnePost)
 router.post('/plusone', protect, handlePlusOne)
 router.post('/minusone', protect, handleMinusOne)
 router.post('/delete', protect, deletePost)
+router.post('/update', protect, updatePost)
 
 module.exports = router;

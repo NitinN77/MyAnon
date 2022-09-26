@@ -15,6 +15,9 @@ const PostDetail = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newComment, setNewCommment] = useState("");
+  const [editToggle, setEditToggle] = useState(false);
+  const [newBody, setNewBody] = useState('')
+
   const {
     isLoading,
     isError,
@@ -24,8 +27,15 @@ const PostDetail = () => {
       .post(import.meta.env.VITE_API_URL + "/post/getone", {
         postId,
       })
-      .then((res) => res.data);
+      .then((res) => res.data)
   });
+
+  useEffect(() => {
+    if (detailPost) {
+      setNewBody(detailPost.body)
+    }
+  }, [detailPost])
+  
 
   const handlePlusOne = () => {
     const user = cookies.get("user");
@@ -92,7 +102,7 @@ const PostDetail = () => {
       alert("Not logged in!");
       return;
     }
-    axios.post(import.meta.env.VITE_API_URL + "/post/delete", {
+    return axios.post(import.meta.env.VITE_API_URL + "/post/delete", {
       postId,
       userId: user._id,
     });
@@ -101,6 +111,27 @@ const PostDetail = () => {
   const deletePostMutation = useMutation(handlePostDelete, {
     onSuccess: () => {
       navigate("/");
+      queryClient.invalidateQueries("posts");
+      queryClient.invalidateQueries("singlePost");
+    },
+  });
+
+  const handlePostEdit = () => {
+    const user = cookies.get("user");
+    if (!user) {
+      alert("Not logged in!");
+      return;
+    }
+    return axios.post(import.meta.env.VITE_API_URL + "/post/update", {
+      postId,
+      userId: user._id,
+      newBody
+    })
+  };
+
+  const editPostMutation = useMutation(handlePostEdit, {
+    onSuccess: () => {
+      setEditToggle(!editToggle)
       queryClient.invalidateQueries("posts");
       queryClient.invalidateQueries("singlePost");
     },
@@ -120,10 +151,23 @@ const PostDetail = () => {
         <div>
           <div className="lg:flex items-start block">
             <div className="w-full lg:w-4/6 ">
-              <h1 className="text-3xl">{detailPost.title}</h1>
-              <br />
-              {detailPost.body}
-              <br />
+              {!editToggle ? (
+                <>
+                  <h1 className="text-3xl">{detailPost.title}</h1>
+                  <br />
+                  <div style={{whiteSpace: 'pre-wrap'}}>
+                  {detailPost.body}
+                  </div>
+                  <br />
+                </>
+              ) : (
+                <>
+                  <h1 className="text-3xl">{detailPost.title}</h1>
+                  <br />
+                  <textarea value={newBody} rows={10} className="block w-full border-0 py-0 pr-2 resize-none focus:outline-none" onChange={(e) => setNewBody(e.target.value)}></textarea>
+                  <br />
+                </>
+              )}
             </div>
             <div className=" w-full lg:w-2/6 mt-2 lg:ml-4 border-2 rounded-md p-4">
               <div className="inline-flex float-right">
@@ -160,7 +204,6 @@ const PostDetail = () => {
               <br />
               {cookies.get("user")._id === detailPost.author._id ? (
                 <div>
-                  {" "}
                   <button
                     onClick={(e) => {
                       e.preventDefault();
@@ -170,6 +213,26 @@ const PostDetail = () => {
                   >
                     Delete
                   </button>
+                  <button
+                    onClick={() => {
+                      setEditToggle(!editToggle)
+                    }}
+                    className="ml-2 mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-violet-600 hover:bg-violet-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Edit
+                  </button>
+                  {
+                    editToggle && 
+                    <button
+                    onClick={(e) => {
+                      e.preventDefault()
+                      editPostMutation.mutate()
+                    }}
+                    className="ml-2 mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Confirm
+                  </button>
+                  }
                 </div>
               ) : (
                 <></>
