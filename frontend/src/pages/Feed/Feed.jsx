@@ -2,7 +2,7 @@ import React from "react";
 import { useState } from "react";
 import axios from "axios";
 import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import { useMutation, useQuery, useQueryClient } from "react-query";
+import { useMutation, useInfiniteQuery, useQueryClient } from "react-query";
 import FeedPost from "../../components/FeedPost/FeedPost";
 
 import Cookies from "universal-cookie";
@@ -12,15 +12,26 @@ const Feed = () => {
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
   const queryClient = useQueryClient();
-  const { isLoading, data: posts } = useQuery(
+  const {
+    data: posts,
+    error,
+    fetchNextPage,
+    hasNextPage,
+    isFetching,
+    isFetchingNextPage,
+    status,
+    isLoading
+  } = useInfiniteQuery(
     "posts",
-    () => {
+    ({ pageParam = 0 }) => {
       return axios
-        .get("http://localhost:3000/post/getall")
+        .get("http://localhost:3000/post/getall?pageNumber=" + pageParam)
         .then((res) => res.data);
     },
     {
-      staleTime: 5000,
+      getNextPageParam: (lastPage, pages) => {
+        return pages.length + 1
+      },
     }
   );
 
@@ -52,7 +63,7 @@ const Feed = () => {
     <div>
       <div className="w-full lg:w-3/6">
         <div className="m-2">
-          <form action="#" className="relative">
+          <form action="#" className="relative mb-2">
             <div className="border border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
               <label htmlFor="title" className="sr-only">
                 Title
@@ -79,7 +90,6 @@ const Feed = () => {
                 onChange={(e) => setFormBody(e.target.value)}
               />
 
-              {/* Spacer element to match the height of the toolbar */}
               <div aria-hidden="true">
                 <div className="h-px" />
                 <div className="py-2">
@@ -91,7 +101,6 @@ const Feed = () => {
             </div>
 
             <div className="absolute bottom-0 inset-x-px">
-              {/* Actions: These are just examples to demonstrate the concept, replace/wire these up however makes sense for your project. */}
 
               <div className="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
                 <div className="flex">
@@ -123,11 +132,27 @@ const Feed = () => {
               </div>
             </div>
           </form>
-          <ul role="list" className="divide-y mt-2 divide-gray-200">
-            {posts?.map((post) => (
-              <FeedPost post={post} key={post._id} />
-            ))}
-          </ul>
+          {posts.pages.map((group, i) => (
+            <ul role="list" className="divide-y divide-gray-200">
+              {group.posts.map((post) => (
+                <FeedPost post={post} key={post._id} />
+              ))}
+            </ul>
+          ))}
+          <div className="flex justify-center mt-2">
+            <button
+              className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+              onClick={() => fetchNextPage()}
+              disabled={!hasNextPage || isFetchingNextPage}
+            >
+              {isFetchingNextPage
+                ? "Loading more..."
+                : hasNextPage
+                ? "Load More"
+                : "Nothing more to load"}
+            </button>
+          </div>
+          <div>{isFetching && !isFetchingNextPage ? "Fetching..." : null}</div>
         </div>
         <div></div>
       </div>
