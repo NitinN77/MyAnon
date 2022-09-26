@@ -82,6 +82,7 @@ const PostDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
       queryClient.invalidateQueries("singlePost");
+      setNewCommment('')
     },
   });
 
@@ -180,7 +181,7 @@ const PostDetail = () => {
               </div>
             </form>
             <ul className="mt-2">
-              {detailPost.comments.map((comment) => (
+              {detailPost.comments.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : 0).map((comment) => (
                 <DetailComment comment={comment} />
               ))}
             </ul>
