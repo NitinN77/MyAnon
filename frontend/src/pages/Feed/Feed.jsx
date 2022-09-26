@@ -25,7 +25,7 @@ const Feed = () => {
     "posts",
     ({ pageParam = 0 }) => {
       return axios
-        .get("http://localhost:3000/post/getall?pageNumber=" + pageParam)
+        .get(import.meta.env.VITE_API_URL + "/post/getall?pageNumber=" + pageParam)
         .then((res) => res.data);
     },
     {
@@ -41,7 +41,7 @@ const Feed = () => {
       alert("Not logged in!");
       return;
     }
-    return axios.post("http://localhost:3000/post/create", {
+    return axios.post(import.meta.env.VITE_API_URL + "/post/create", {
       title: formTitle,
       body: formBody,
       authorId: user._id,

@@ -14,7 +14,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json())
 
-mongoose.connect('mongodb://0.0.0.0:27017/myanondb', {
+mongoose.connect(process.env.DB_URL, {
    useNewUrlParser: true,
    useUnifiedTopology: true
 }, (err) => {

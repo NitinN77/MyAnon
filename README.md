@@ -32,3 +32,31 @@ A MERN-stack social media application
 ### Database
 
 - MongoDB
+
+## Project Setup
+
+```
+1. git clone https://github.com/VoidlessVoid7/MyAnon
+2. cd backend
+3. npm i
+```
+4. Create a file named .env and paste the following into it (For demonstration). Replace with a legitimate secret and database URL if needed.
+
+```
+JWT_SECRET=abcdefg
+DB_URL=mongodb://0.0.0.0:27017/myanondb
+```
+```
+5. node app.js
+6. cd ..
+7. cd frontend
+8. yarn
+```
+9. Create a file named .env and paste the following into it. Replace with the URL of the hosted backend if needed.
+```
+VITE_API_URL=http://localhost:3000
+```
+```
+10. yarn dev
+```
+11. Open <http://localhost:5173/> to access the frontend

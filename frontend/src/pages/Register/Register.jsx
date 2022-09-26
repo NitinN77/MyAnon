@@ -14,7 +14,7 @@ const Register = () => {
   const handleRegister = async (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/user/register", {
+      .post(import.meta.env.VITE_API_URL + "/user/register", {
         email: registerEmail,
         password: registerPwd,
         username: registerUsername,

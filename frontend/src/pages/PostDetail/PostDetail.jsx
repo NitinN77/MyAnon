@@ -20,7 +20,7 @@ const PostDetail = () => {
     data: detailPost,
   } = useQuery(["singlePost", postId], () => {
     return axios
-      .post("http://localhost:3000/post/getone", {
+      .post(import.meta.env.VITE_API_URL + "/post/getone", {
         postId,
       })
       .then((res) => res.data);
@@ -32,7 +32,7 @@ const PostDetail = () => {
       alert("Not logged in!");
       return;
     }
-    return axios.post("http://localhost:3000/post/plusone", {
+    return axios.post(import.meta.env.VITE_API_URL + "/post/plusone", {
       postId,
       userId: user._id,
     });
@@ -44,7 +44,7 @@ const PostDetail = () => {
       alert("Not logged in!");
       return;
     }
-    return axios.post("http://localhost:3000/post/minusone", {
+    return axios.post(import.meta.env.VITE_API_URL + "/post/minusone", {
       postId,
       userId: user._id,
     });
@@ -70,7 +70,7 @@ const PostDetail = () => {
       alert("Not logged in!");
       return;
     }
-    return axios.post("http://localhost:3000/comment/create", {
+    return axios.post(import.meta.env.VITE_API_URL + "/comment/create", {
       postId,
       userId: user._id,
       body: newComment,
