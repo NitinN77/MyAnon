@@ -8,7 +8,6 @@ const FeedPost = ({ post }) => {
   let navigate = useNavigate();
   return (
     <li
-      key={post._id}
       className="relative bg-white py-5 px-4 hover:bg-gray-50 focus-within:ring-2 focus-within:ring-inset"
       onClick={() => {
         navigate(`/posts/${post._id}`);

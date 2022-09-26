@@ -9,16 +9,20 @@ import Cookies from "universal-cookie";
 
 const Feed = () => {
   const cookies = new Cookies();
-  const [posts, setPosts] = useState([]);
   const [formTitle, setFormTitle] = useState("");
   const [formBody, setFormBody] = useState("");
-
   const queryClient = useQueryClient();
-  const { isLoading, isError, data } = useQuery("posts", () => {
-    axios
-      .get("http://localhost:3000/post/getall")
-      .then((res) => setPosts(res.data));
-  });
+  const { isLoading, data: posts } = useQuery(
+    "posts",
+    () => {
+      return axios
+        .get("http://localhost:3000/post/getall")
+        .then((res) => res.data);
+    },
+    {
+      staleTime: 5000,
+    }
+  );
 
   const createPost = () => {
     const user = cookies.get("user");
@@ -35,10 +39,14 @@ const Feed = () => {
   const postMutation = useMutation(createPost, {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
-      setFormBody('')
-      setFormTitle('')
+      setFormBody("");
+      setFormTitle("");
     },
   });
+
+  if (isLoading) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <div>
@@ -116,11 +124,9 @@ const Feed = () => {
             </div>
           </form>
           <ul role="list" className="divide-y mt-2 divide-gray-200">
-            {isLoading ? (
-              <div>Loading... </div>
-            ) : (
-              posts.map((post) => <FeedPost post={post} />)
-            )}
+            {posts?.map((post) => (
+              <FeedPost post={post} key={post._id} />
+            ))}
           </ul>
         </div>
         <div></div>

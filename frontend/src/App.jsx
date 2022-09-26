@@ -1,7 +1,5 @@
 import axios from "axios";
-import { useState, useEffect } from "react";
-import "./App.css";
-
+import { ReactQueryDevtools } from 'react-query/devtools'
 import { BrowserRouter as Router, Route, Link, Routes } from "react-router-dom";
 import Login from "./pages/Login/Login";
 import Register from "./pages/Register/Register";
@@ -33,7 +31,7 @@ function App() {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="App">
+      <div>
         <Router>
           <Navbar />
           <Routes>
@@ -44,6 +42,7 @@ function App() {
           </Routes>
         </Router>
       </div>
+      <ReactQueryDevtools intialIsOpen={false} position='bottom-right'/>
     </QueryClientProvider>
   );
 }

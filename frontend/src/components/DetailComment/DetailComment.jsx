@@ -5,7 +5,6 @@ import { dateFormatter } from "../../util/datetimehelper";
 const DetailComment = ({ comment }) => {
   return (
     <li
-      key={comment._id}
       className="relative bg-white py-5 px-4 hover:bg-gray-100"
     >
       <div className="flex justify-between lg:space-x-80">

@@ -13,18 +13,17 @@ const PostDetail = () => {
   const { postId } = useParams();
   const cookies = new Cookies();
   const queryClient = useQueryClient();
-  const [detailPost, setDetailPost] = useState(null);
   const [newComment, setNewCommment] = useState("");
-
-  const { isLoading, isError, data } = useQuery("singlePost", () => {
-    axios
+  const {
+    isLoading,
+    isError,
+    data: detailPost,
+  } = useQuery(["singlePost", postId], () => {
+    return axios
       .post("http://localhost:3000/post/getone", {
         postId,
       })
-      .then((post) => {
-        setDetailPost(post.data);
-      })
-      .catch((err) => console.log(err));
+      .then((res) => res.data);
   });
 
   const handlePlusOne = () => {
@@ -82,12 +81,16 @@ const PostDetail = () => {
     onSuccess: () => {
       queryClient.invalidateQueries("posts");
       queryClient.invalidateQueries("singlePost");
-      setNewCommment('')
+      setNewCommment("");
     },
   });
 
   if (isLoading) {
     return <div>Loading...</div>;
+  }
+
+  if (isError) {
+    return <div>{isError}</div>;
   }
 
   return (
@@ -102,7 +105,7 @@ const PostDetail = () => {
               <br />
             </div>
             <div className=" w-full lg:w-2/6 mt-2 lg:ml-4 border-2 rounded-md p-4">
-              <p className="inline-flex float-right">
+              <div className="inline-flex float-right">
                 <BoltIcon
                   onClick={(e) => {
                     e.preventDefault();
@@ -129,7 +132,7 @@ const PostDetail = () => {
                 >
                   -1
                 </BoltSlashIcon>
-              </p>
+              </div>
               {detailPost.author.username}
               <br />
               {dateFormatter(detailPost.createdAt)}
@@ -181,9 +184,11 @@ const PostDetail = () => {
               </div>
             </form>
             <ul className="mt-2">
-              {detailPost.comments.sort((a, b) => (a.createdAt < b.createdAt) ? 1 : 0).map((comment) => (
-                <DetailComment comment={comment} />
-              ))}
+              {detailPost.comments
+                .sort((a, b) => (a.createdAt < b.createdAt ? 1 : 0))
+                .map((comment) => (
+                  <DetailComment key={comment._id} comment={comment} />
+                ))}
             </ul>
           </div>
         </div>
