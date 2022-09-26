@@ -12,7 +12,6 @@ exports.getAllPosts = (req, res) => {
       if (err) {
         console.log(err);
       }
-      console.log("length of posts", posts.length);
       return res.status(200).json({
         posts,
         pageNumber,
