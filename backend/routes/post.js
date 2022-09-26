@@ -5,7 +5,8 @@ const {
     getPostsByUser,
     getOnePost,
     handlePlusOne,
-    handleMinusOne
+    handleMinusOne,
+    deletePost
 } = require("../controllers/post");
 const { protect } = require("../middleware/auth");
 
@@ -17,4 +18,6 @@ router.post('/getbyuser', getPostsByUser)
 router.post('/getone', getOnePost)
 router.post('/plusone', protect, handlePlusOne)
 router.post('/minusone', protect, handleMinusOne)
+router.post('/delete', protect, deletePost)
+
 module.exports = router;

@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useEffect } from "react";
 import { useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useMutation, useQuery, useQueryClient } from "react-query";
 import Cookies from "universal-cookie";
 import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
@@ -12,6 +12,7 @@ import { dateFormatter } from "../../util/datetimehelper";
 const PostDetail = () => {
   const { postId } = useParams();
   const cookies = new Cookies();
+  const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [newComment, setNewCommment] = useState("");
   const {
@@ -85,6 +86,26 @@ const PostDetail = () => {
     },
   });
 
+  const handlePostDelete = () => {
+    const user = cookies.get("user");
+    if (!user) {
+      alert("Not logged in!");
+      return;
+    }
+    axios.post(import.meta.env.VITE_API_URL + "/post/delete", {
+      postId,
+      userId: user._id,
+    });
+  };
+
+  const deletePostMutation = useMutation(handlePostDelete, {
+    onSuccess: () => {
+      navigate("/");
+      queryClient.invalidateQueries("posts");
+      queryClient.invalidateQueries("singlePost");
+    },
+  });
+
   if (isLoading) {
     return <div>Loading...</div>;
   }
@@ -136,6 +157,23 @@ const PostDetail = () => {
               {detailPost.author.username}
               <br />
               {dateFormatter(detailPost.createdAt)}
+              <br />
+              {cookies.get("user")._id === detailPost.author._id ? (
+                <div>
+                  {" "}
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      deletePostMutation.mutate();
+                    }}
+                    className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                  >
+                    Delete
+                  </button>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
           </div>
           <div className="lg:w-4/6 w-full mt-4">
