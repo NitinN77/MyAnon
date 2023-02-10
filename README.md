@@ -27,7 +27,6 @@ A MERN-stack social media application
 - Node
 - Express
 - Mongoose
-- jsonwebtoken
 
 ### Database
 
