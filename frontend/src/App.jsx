@@ -14,7 +14,7 @@ const cookies = new Cookies();
 axios.interceptors.request.use(
   (config) => {
     const { origin } = new URL(config.url);
-    const allowedOrigins = [import.meta.env.VITE_API_URL];
+    const allowedOrigins = [import.meta.env.VITE_API_URL.split('/dev')[0]];
     const token = cookies.get("token");
     if (allowedOrigins.includes(origin)) {
       config.headers.authorization = `Bearer ${token}`;

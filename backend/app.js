@@ -6,6 +6,7 @@ require('dotenv').config()
 const userRoutes = require('./routes/user')
 const postRoutes = require('./routes/post')
 const commentRoutes = require('./routes/comment')
+const sls = require('serverless-http')
 
 const app = express()
 const port = 3000
@@ -33,4 +34,5 @@ app.get('/', (req, res) => {
     res.json({message: "404 Page Not Found"})
 })
 
-app.listen(port, () => console.log(`Listening on port ${port}`))
+// app.listen(port, () => console.log(`Listening on port ${port}`))
+module.exports.server = sls(app)

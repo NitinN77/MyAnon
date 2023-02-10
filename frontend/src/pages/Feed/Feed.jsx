@@ -61,7 +61,7 @@ const Feed = () => {
 
   return (
     <div>
-      <div className="w-full lg:w-3/6">
+      <div className="lg:mx-32 w-full lg:w-3/6 ">
         <div className="m-2">
           <form action="#" className="relative mb-2">
             <div className="border border-gray-300 pl-4 rounded-lg shadow-sm overflow-hidden ">
@@ -133,7 +133,7 @@ const Feed = () => {
             </div>
           </form>
           {posts.pages.map((group, i) => (
-            <ul role="list" className="divide-y divide-gray-200">
+            <ul role="list" className="divide-y divide-gray-200" key={i}>
               {group.posts.map((post) => (
                 <FeedPost post={post} key={post._id} />
               ))}

@@ -27,6 +27,9 @@ const Login = () => {
       })
       .catch((err) => {
         console.log("ERR", err);
+        if (err.code == 'ERR_BAD_REQUEST') {
+          alert('Invalid Credentials.')
+        }
       });
   };
 

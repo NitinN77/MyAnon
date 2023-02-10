@@ -146,7 +146,7 @@ const PostDetail = () => {
   }
 
   return (
-    <div className="m-3">
+    <div className="m-3 lg:mx-32">
       {detailPost ? (
         <div>
           <div className="lg:flex items-start block">
@@ -202,7 +202,7 @@ const PostDetail = () => {
               <br />
               {dateFormatter(detailPost.createdAt)}
               <br />
-              {cookies.get("user")._id === detailPost.author._id ? (
+              {cookies.get("user")?._id === detailPost.author._id ? (
                 <div>
                   <button
                     onClick={(e) => {

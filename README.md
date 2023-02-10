@@ -40,7 +40,7 @@ A MERN-stack social media application
 2. cd backend
 3. npm i
 ```
-4. Create a file named .env and paste the following into it (For demonstration). Replace with a legitimate secret and database URL if needed.
+4. Create a .env file and paste the following into it (For demo purposes). Replace it with a legitimate secret and database URL if needed.
 
 ```
 JWT_SECRET=abcdefg
