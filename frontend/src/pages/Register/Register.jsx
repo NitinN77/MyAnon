@@ -1,18 +1,18 @@
-import React from "react";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import "./Register.css";
-import { useNavigate } from "react-router-dom";
-import Cookies from 'universal-cookie';
+import React from "react"
+import axios from "axios"
+import { useState, useEffect } from "react"
+import "./Register.css"
+import { useNavigate } from "react-router-dom"
+import Cookies from "universal-cookie"
 
 const Register = () => {
-  const [registerEmail, setRegisterEmail] = useState("");
-  const [registerPwd, setRegisterPwd] = useState("");
-  const [registerUsername, setRegisterUsername] = useState("");
-  let navigate = useNavigate();
-  const cookies = new Cookies();
+  const [registerEmail, setRegisterEmail] = useState("")
+  const [registerPwd, setRegisterPwd] = useState("")
+  const [registerUsername, setRegisterUsername] = useState("")
+  let navigate = useNavigate()
+  const cookies = new Cookies()
   const handleRegister = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     axios
       .post(import.meta.env.VITE_API_URL + "/user/register", {
         email: registerEmail,
@@ -20,15 +20,16 @@ const Register = () => {
         username: registerUsername,
       })
       .then((res) => {
-        cookies.set("token", res.data.token);
-        cookies.set("user", JSON.stringify(res.data));
-        navigate("/");
-        window.location.reload();
+        cookies.set("token", res.data.token)
+        cookies.set("user", JSON.stringify(res.data))
+        navigate("/")
+        window.location.reload()
       })
       .catch((err) => {
-        console.log("ERR", err);
-      });
-  };
+        console.log("ERR", err.response.data.errors)
+        alert(err.response.data.errors.map((err) => err.msg))
+      })
+  }
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -96,7 +97,6 @@ const Register = () => {
           </div>
 
           <div className="flex items-center justify-between">
-
             {/* <div className="text-sm">
               <a
                 href="#"
@@ -118,7 +118,7 @@ const Register = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Register;
+export default Register

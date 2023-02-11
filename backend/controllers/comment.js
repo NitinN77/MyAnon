@@ -12,5 +12,5 @@ exports.createComment = async (req, res) => {
     const post = await Post.findById(postId)
     post.comments.push(mongoose.Types.ObjectId(comment.id))
     post.save()
-    return res.status(200).json({message: "comment created"})
+    return res.status(200).json({ message: "comment created" })
 }

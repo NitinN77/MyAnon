@@ -1,22 +1,22 @@
-import axios from "axios";
-import React, { useEffect } from "react";
-import { useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
-import { useMutation, useQuery, useQueryClient } from "react-query";
-import Cookies from "universal-cookie";
-import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid";
-import { classNames } from "../../util/tailwindhelper";
-import DetailComment from "../../components/DetailComment/DetailComment";
-import { dateFormatter } from "../../util/datetimehelper";
+import axios from "axios"
+import React, { useEffect } from "react"
+import { useState } from "react"
+import { useNavigate, useParams } from "react-router-dom"
+import { useMutation, useQuery, useQueryClient } from "react-query"
+import Cookies from "universal-cookie"
+import { BoltIcon, BoltSlashIcon } from "@heroicons/react/24/solid"
+import { classNames } from "../../util/tailwindhelper"
+import DetailComment from "../../components/DetailComment/DetailComment"
+import { dateFormatter } from "../../util/datetimehelper"
 
 const PostDetail = () => {
-  const { postId } = useParams();
-  const cookies = new Cookies();
-  const navigate = useNavigate();
-  const queryClient = useQueryClient();
-  const [newComment, setNewCommment] = useState("");
-  const [editToggle, setEditToggle] = useState(false);
-  const [newBody, setNewBody] = useState('')
+  const { postId } = useParams()
+  const cookies = new Cookies()
+  const navigate = useNavigate()
+  const queryClient = useQueryClient()
+  const [newComment, setNewCommment] = useState("")
+  const [editToggle, setEditToggle] = useState(false)
+  const [newBody, setNewBody] = useState("")
 
   const {
     isLoading,
@@ -24,125 +24,125 @@ const PostDetail = () => {
     data: detailPost,
   } = useQuery(["singlePost", postId], () => {
     return axios
-      .post(import.meta.env.VITE_API_URL + "/post/getone", {
-        postId,
-      })
+      .get(import.meta.env.VITE_API_URL + `/post/getbyid/${postId}`)
       .then((res) => res.data)
-  });
+  })
 
   useEffect(() => {
     if (detailPost) {
       setNewBody(detailPost.body)
     }
   }, [detailPost])
-  
 
   const handlePlusOne = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/post/plusone", {
       postId,
       userId: user._id,
-    });
-  };
+    })
+  }
 
   const handleMinusOne = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/post/minusone", {
       postId,
       userId: user._id,
-    });
-  };
+    })
+  }
 
   const plusOneMutation = useMutation(handlePlusOne, {
     onSuccess: () => {
-      queryClient.invalidateQueries("posts");
-      queryClient.invalidateQueries("singlePost");
+      queryClient.invalidateQueries("posts")
+      queryClient.invalidateQueries("singlePost")
     },
-  });
+  })
 
   const minusOneMutation = useMutation(handleMinusOne, {
     onSuccess: () => {
-      queryClient.invalidateQueries("posts");
-      queryClient.invalidateQueries("singlePost");
+      queryClient.invalidateQueries("posts")
+      queryClient.invalidateQueries("singlePost")
     },
-  });
+  })
 
   const handleNewComment = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/comment/create", {
       postId,
       userId: user._id,
       body: newComment,
-    });
-  };
+    })
+  }
 
   const newCommentMutation = useMutation(handleNewComment, {
     onSuccess: () => {
-      queryClient.invalidateQueries("posts");
-      queryClient.invalidateQueries("singlePost");
-      setNewCommment("");
+      queryClient.invalidateQueries("posts")
+      queryClient.invalidateQueries("singlePost")
+      setNewCommment("")
     },
-  });
+    onError: (err) => {
+      alert(err.response.data.errors.map((err) => err.msg))
+    },
+  })
 
   const handlePostDelete = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/post/delete", {
       postId,
       userId: user._id,
-    });
-  };
+    })
+  }
 
   const deletePostMutation = useMutation(handlePostDelete, {
     onSuccess: () => {
-      navigate("/");
-      queryClient.invalidateQueries("posts");
-      queryClient.invalidateQueries("singlePost");
+      navigate("/")
+      queryClient.invalidateQueries("posts")
+      queryClient.invalidateQueries("singlePost")
     },
-  });
+  })
 
   const handlePostEdit = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/post/update", {
       postId,
       userId: user._id,
-      newBody
+      newBody,
     })
-  };
+  }
 
   const editPostMutation = useMutation(handlePostEdit, {
     onSuccess: () => {
       setEditToggle(!editToggle)
-      queryClient.invalidateQueries("posts");
-      queryClient.invalidateQueries("singlePost");
+      queryClient.invalidateQueries("posts")
+      queryClient.invalidateQueries("singlePost")
     },
-  });
+  })
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   if (isError) {
-    return <div>{isError}</div>;
+    return <div>{isError}</div>
   }
 
   return (
@@ -155,8 +155,8 @@ const PostDetail = () => {
                 <>
                   <h1 className="text-3xl">{detailPost.title}</h1>
                   <br />
-                  <div style={{whiteSpace: 'pre-wrap'}}>
-                  {detailPost.body}
+                  <div style={{ whiteSpace: "pre-wrap" }}>
+                    {detailPost.body}
                   </div>
                   <br />
                 </>
@@ -164,7 +164,12 @@ const PostDetail = () => {
                 <>
                   <h1 className="text-3xl">{detailPost.title}</h1>
                   <br />
-                  <textarea value={newBody} rows={10} className="block w-full border-0 py-0 pr-2 resize-none focus:outline-none" onChange={(e) => setNewBody(e.target.value)}></textarea>
+                  <textarea
+                    value={newBody}
+                    rows={10}
+                    className="block w-full border-0 py-0 pr-2 resize-none focus:outline-none"
+                    onChange={(e) => setNewBody(e.target.value)}
+                  ></textarea>
                   <br />
                 </>
               )}
@@ -173,8 +178,8 @@ const PostDetail = () => {
               <div className="inline-flex float-right">
                 <BoltIcon
                   onClick={(e) => {
-                    e.preventDefault();
-                    plusOneMutation.mutate();
+                    e.preventDefault()
+                    plusOneMutation.mutate()
                   }}
                   className="h-6 w-6 cursor-pointer text-indigo-600 mr-4 hover:bg-indigo-600 hover:text-gray-200 rounded"
                 ></BoltIcon>
@@ -190,8 +195,8 @@ const PostDetail = () => {
                 </div>
                 <BoltSlashIcon
                   onClick={(e) => {
-                    e.preventDefault();
-                    minusOneMutation.mutate();
+                    e.preventDefault()
+                    minusOneMutation.mutate()
                   }}
                   className="h-6 w-6 cursor-pointer text-gray-600 ml-4 hover:bg-gray-600 hover:text-gray-200 rounded"
                 >
@@ -206,8 +211,8 @@ const PostDetail = () => {
                 <div>
                   <button
                     onClick={(e) => {
-                      e.preventDefault();
-                      deletePostMutation.mutate();
+                      e.preventDefault()
+                      deletePostMutation.mutate()
                     }}
                     className="mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-red-600 hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
@@ -221,18 +226,17 @@ const PostDetail = () => {
                   >
                     Edit
                   </button>
-                  {
-                    editToggle && 
+                  {editToggle && (
                     <button
-                    onClick={(e) => {
-                      e.preventDefault()
-                      editPostMutation.mutate()
-                    }}
-                    className="ml-2 mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
-                  >
-                    Confirm
-                  </button>
-                  }
+                      onClick={(e) => {
+                        e.preventDefault()
+                        editPostMutation.mutate()
+                      }}
+                      className="ml-2 mt-4 inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-emerald-600 hover:bg-emerald-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+                    >
+                      Confirm
+                    </button>
+                  )}
                 </div>
               ) : (
                 <></>
@@ -253,7 +257,7 @@ const PostDetail = () => {
                   placeholder="Write a comment..."
                   value={newComment}
                   onChange={(e) => {
-                    setNewCommment(e.target.value);
+                    setNewCommment(e.target.value)
                   }}
                 />
                 <div aria-hidden="true">
@@ -273,8 +277,8 @@ const PostDetail = () => {
                     <button
                       type="submit"
                       onClick={(e) => {
-                        e.preventDefault();
-                        newCommentMutation.mutate();
+                        e.preventDefault()
+                        newCommentMutation.mutate()
                       }}
                       className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                     >
@@ -297,7 +301,7 @@ const PostDetail = () => {
         <div>Loading...</div>
       )}{" "}
     </div>
-  );
-};
+  )
+}
 
-export default PostDetail;
+export default PostDetail

@@ -1,5 +1,3 @@
-# serverless.yml
-
 service: serverless-nodejs-app
 
 provider:
@@ -10,13 +8,13 @@ provider:
 
 functions:
   app:
-    handler: app.server # reference the file and exported method
-    events: # events trigger lambda functions
-      - http: # this is an API Gateway HTTP event trigger
+    handler: app.server 
+    events: 
+      - http: 
           path: /
           method: ANY
           cors: true
-      - http: # all routes get proxied to the Express router
+      - http: 
           path: /{proxy+}
           method: ANY
           cors: true

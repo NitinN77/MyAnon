@@ -1,17 +1,17 @@
-import React from "react";
-import { useState } from "react";
-import axios from "axios";
-import { Cog6ToothIcon } from "@heroicons/react/24/solid";
-import { useMutation, useInfiniteQuery, useQueryClient } from "react-query";
-import FeedPost from "../../components/FeedPost/FeedPost";
+import React from "react"
+import { useState } from "react"
+import axios from "axios"
+import { Cog6ToothIcon } from "@heroicons/react/24/solid"
+import { useMutation, useInfiniteQuery, useQueryClient } from "react-query"
+import FeedPost from "../../components/FeedPost/FeedPost"
 
-import Cookies from "universal-cookie";
+import Cookies from "universal-cookie"
 
 const Feed = () => {
-  const cookies = new Cookies();
-  const [formTitle, setFormTitle] = useState("");
-  const [formBody, setFormBody] = useState("");
-  const queryClient = useQueryClient();
+  const cookies = new Cookies()
+  const [formTitle, setFormTitle] = useState("")
+  const [formBody, setFormBody] = useState("")
+  const queryClient = useQueryClient()
   const {
     data: posts,
     error,
@@ -20,43 +20,49 @@ const Feed = () => {
     isFetching,
     isFetchingNextPage,
     status,
-    isLoading
+    isLoading,
   } = useInfiniteQuery(
     "posts",
     ({ pageParam = 0 }) => {
       return axios
-        .get(import.meta.env.VITE_API_URL + "/post/getall?pageNumber=" + pageParam)
-        .then((res) => res.data);
+        .get(
+          import.meta.env.VITE_API_URL + "/post/getall?pageNumber=" + pageParam
+        )
+        .then((res) => res.data)
     },
     {
       getNextPageParam: (lastPage, pages) => {
         return pages.length + 1
       },
     }
-  );
+  )
 
   const createPost = () => {
-    const user = cookies.get("user");
+    const user = cookies.get("user")
     if (!user) {
-      alert("Not logged in!");
-      return;
+      alert("Not logged in!")
+      return
     }
     return axios.post(import.meta.env.VITE_API_URL + "/post/create", {
       title: formTitle,
       body: formBody,
       authorId: user._id,
-    });
-  };
+    })
+  }
+
   const postMutation = useMutation(createPost, {
     onSuccess: () => {
-      queryClient.invalidateQueries("posts");
-      setFormBody("");
-      setFormTitle("");
+      queryClient.invalidateQueries("posts")
+      setFormBody("")
+      setFormTitle("")
     },
-  });
+    onError: (err) => {
+      alert(err.response.data.errors.map((err) => err.msg))
+    },
+  })
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div>Loading...</div>
   }
 
   return (
@@ -101,7 +107,6 @@ const Feed = () => {
             </div>
 
             <div className="absolute bottom-0 inset-x-px">
-
               <div className="border-t border-gray-200 px-2 py-2 flex justify-between items-center space-x-3 sm:px-3">
                 <div className="flex">
                   <button
@@ -121,8 +126,8 @@ const Feed = () => {
                   <button
                     type="submit"
                     onClick={(e) => {
-                      e.preventDefault();
-                      postMutation.mutate();
+                      e.preventDefault()
+                      postMutation.mutate()
                     }}
                     className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
                   >
@@ -157,7 +162,7 @@ const Feed = () => {
         <div></div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Feed;
+export default Feed

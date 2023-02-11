@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const postSchema = new mongoose.Schema({
     title: {
@@ -23,8 +23,8 @@ const postSchema = new mongoose.Schema({
     minusOnes: [{
         type: mongoose.Schema.Types.ObjectId, ref: "User"
     }]
-});
+})
 
 postSchema.set('timestamps', true)
 
-module.exports = mongoose.model('Post', postSchema);
+module.exports = mongoose.model('Post', postSchema)

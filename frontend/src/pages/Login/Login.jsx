@@ -1,37 +1,33 @@
-import React from "react";
-import axios from "axios";
-import { useState, useEffect } from "react";
-import "./Login.css";
-import { useNavigate } from "react-router-dom";
-import Cookies from 'universal-cookie';
- 
-
+import React from "react"
+import axios from "axios"
+import { useState, useEffect } from "react"
+import "./Login.css"
+import { useNavigate } from "react-router-dom"
+import Cookies from "universal-cookie"
 
 const Login = () => {
-  const cookies = new Cookies();
-  const [loginEmail, setLoginEmail] = useState("");
-  let navigate = useNavigate();
-  const [loginPwd, setLoginPwd] = useState("");
+  const cookies = new Cookies()
+  const [loginEmail, setLoginEmail] = useState("")
+  let navigate = useNavigate()
+  const [loginPwd, setLoginPwd] = useState("")
   const handleLogin = async (e) => {
-    e.preventDefault();
+    e.preventDefault()
     axios
       .post(import.meta.env.VITE_API_URL + "/user/login", {
         email: loginEmail,
         password: loginPwd,
       })
       .then((res) => {
-        cookies.set('token', res.data.token, { path: '/'})
-        cookies.set('user', JSON.stringify(res.data), { path: '/'})
-        navigate("/");
-        window.location.reload();
+        cookies.set("token", res.data.token, { path: "/" })
+        cookies.set("user", JSON.stringify(res.data), { path: "/" })
+        navigate("/")
+        window.location.reload()
       })
       .catch((err) => {
-        console.log("ERR", err);
-        if (err.code == 'ERR_BAD_REQUEST') {
-          alert('Invalid Credentials.')
-        }
-      });
-  };
+        console.log("ERR", err.response.data.errors)
+        alert(err.response.data.errors.map((err) => err.msg))
+      })
+  }
 
   return (
     <div className="min-h-full flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
@@ -85,7 +81,9 @@ const Login = () => {
 
           <div className="flex items-center justify-between">
             <div className="flex items-center">
-              <a href="/register" className="ml-1 text-sm">Create an account</a>
+              <a href="/register" className="ml-1 text-sm">
+                Create an account
+              </a>
             </div>
 
             {/* <div className="text-sm">
@@ -109,7 +107,7 @@ const Login = () => {
         </form>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login

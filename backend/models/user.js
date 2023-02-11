@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+const mongoose = require('mongoose')
 
 const userSchema = new mongoose.Schema({
     firstName: {
@@ -16,7 +16,7 @@ const userSchema = new mongoose.Schema({
         required: true,
         unique: true,
         trim: true,
-    }, 
+    },
     email: {
         type: String,
         required: true,
@@ -33,6 +33,6 @@ const userSchema = new mongoose.Schema({
     comments: [{
         type: mongoose.Schema.Types.ObjectId, ref: "Comment"
     }],
-});
+})
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model('User', userSchema)

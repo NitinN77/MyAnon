@@ -1,4 +1,5 @@
-const express = require("express");
+const express = require("express")
+
 const {
     getAllPosts,
     createPost,
@@ -8,18 +9,30 @@ const {
     handleMinusOne,
     deletePost,
     updatePost
-} = require("../controllers/post");
-const { protect } = require("../middleware/auth");
+} = require("../controllers/post")
 
-const router = express.Router();
+const {
+    createPostReq,
+    getPostByIdReq,
+    getPostByUserIdReq,
+    handlePlusOrMinusReq,
+    deletePostReq,
+    updatePostReq
+} = require('../schemas/post')
+
+const { protect } = require("../middleware/auth")
+const { validateReq } = require("../middleware/validator")
+
+
+const router = express.Router()
 
 router.get('/getall', getAllPosts)
-router.post('/create', protect, createPost)
-router.post('/getbyuser', getPostsByUser)
-router.post('/getone', getOnePost)
-router.post('/plusone', protect, handlePlusOne)
-router.post('/minusone', protect, handleMinusOne)
-router.post('/delete', protect, deletePost)
-router.post('/update', protect, updatePost)
+router.post('/create', protect, createPostReq, validateReq, createPost)
+router.get('/getbyuserid/:userId', getPostByUserIdReq, validateReq, getPostsByUser)
+router.get('/getbyid/:postId', getPostByIdReq, validateReq, getOnePost)
+router.post('/plusone', protect, handlePlusOrMinusReq, validateReq, handlePlusOne)
+router.post('/minusone', protect, handlePlusOrMinusReq, validateReq, handleMinusOne)
+router.post('/delete', protect, deletePostReq, validateReq, deletePost)
+router.post('/update', protect, updatePostReq, validateReq, updatePost)
 
-module.exports = router;
+module.exports = router
