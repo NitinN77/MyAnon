@@ -58,4 +58,4 @@ VITE_API_URL=http://localhost:3000
 ```
 10. yarn dev
 ```
-11. Open `http://localhost:5173/` to access the frontend
+11. Open http://localhost:5173/ to access the frontend
